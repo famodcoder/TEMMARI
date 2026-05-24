@@ -6,7 +6,7 @@ import { urlFor } from '@/lib/sanity'
 function getImageUrl(image?: string | Record<string, unknown>) {
   if (!image) return undefined
   if (typeof image === 'string') return image
-  return urlFor(image).width(1200).height(1200).auto('format').url()
+  return urlFor(image).width(1200).height(1200).url()
 }
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
@@ -16,7 +16,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     return notFound()
   }
 
-  const imageUrl = getImageUrl(product.image)
+  const imageUrl = product.image ? getImageUrl(product.image as any) : null
 
   return (
     <main className="page page--product">

@@ -1,4 +1,4 @@
-import type { SanityImageSource } from '@sanity/image-url'
+
 
 export interface Product {
   id: string
@@ -15,7 +15,7 @@ export interface Product {
   isBespoke?: boolean
   /** Placeholder gradient class until real photos are ready */
   placeholderClass?: string
-  image?: string | SanityImageSource
+  image?: any
 }
 
 export interface Collection {

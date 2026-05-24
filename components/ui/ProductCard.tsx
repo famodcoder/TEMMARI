@@ -22,7 +22,7 @@ const PLACEHOLDER_STYLES: Record<string, string> = {
 function getImageUrl(image?: Product['image']) {
   if (!image) return undefined
   if (typeof image === 'string') return image
-  return urlFor(image).width(900).height(900).auto('format').url()
+  return urlFor(image).width(900).height(900).url()
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
