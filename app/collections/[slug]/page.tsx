@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import ProductCard from '@/components/ui/ProductCard'
 import { getProductsForCollection } from '@/lib/products'
 
-const COLLECTIONS = {
+const COLLECTIONS: Record<string, { title: string; description: string }> = {
   'so-fly': {
     title: 'So Fly Collection',
     description: 'Our debut collection of statement tailoring, ready-to-wear looks, and premium finishing.',
