@@ -1,74 +1,12 @@
 import type { Product, Collection, Category } from '@/types'
 import { client } from '@/lib/sanity'
-import { productsQuery, productBySlugQuery } from '@/lib/queries'
+import { productsQuery, productBySlugQuery, collectionProductsQuery } from '@/lib/queries'
 
-export const products: Product[] = [
-  {
-    id: '1',
-    slug: 'sovereign-suit',
-    name: 'The Sovereign Suit',
-    category: "Men's Suits",
-    price: 95000,
-    badge: 'New Arrival',
-    placeholderClass: 'pi-1',
-    description: 'A masterwork in structured tailoring. Clean lapels, precise shoulder seams, and a silhouette built to command.',
-    fabric: 'Premium wool-blend',
-    sizes: ['S', 'M', 'L', 'XL', 'XXL', 'Custom'],
-    colors: ['Navy', 'Charcoal', 'Black'],
-    isBespoke: true,
-  },
-  {
-    id: '2',
-    slug: 'crimson-power-set',
-    name: 'Crimson Power Set',
-    category: "Women's Collection",
-    price: 78000,
-    placeholderClass: 'pi-2',
-    description: 'Bold, refined, unapologetic. This two-piece set redefines what it means to walk into a room.',
-    fabric: 'High-twist crepe',
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'Custom'],
-    colors: ['Crimson', 'Burgundy'],
-    isBespoke: true,
-  },
-  {
-    id: '3',
-    slug: 'navy-boardroom-blazer',
-    name: 'Navy Boardroom Blazer',
-    category: 'Corporate',
-    price: 55000,
-    badge: 'Bestseller',
-    placeholderClass: 'pi-3',
-    description: 'The definitive corporate blazer. Structured enough for the boardroom, versatile enough for everywhere else.',
-    fabric: 'Italian-finish polyester blend',
-    sizes: ['S', 'M', 'L', 'XL', 'XXL', 'Custom'],
-    colors: ['Navy', 'Black', 'Slate'],
-    isBespoke: true,
-  },
-  {
-    id: '4',
-    slug: 'gold-meridian-pocket-square',
-    name: 'Gold Meridian Pocket Square',
-    category: 'Accessories',
-    price: 8500,
-    placeholderClass: 'pi-4',
-    description: 'The final touch. Hand-folded silk with a warm gold finish that elevates any suit.',
-    fabric: 'Silk-satin',
-    colors: ['Gold', 'Ivory', 'Wine'],
-  },
-]
-
-export const soFlyCollection: Collection = {
-  id: 'so-fly',
-  slug: 'so-fly',
-  name: '"So Fly"',
-  tagline: 'Our debut collection — where confidence meets craft.',
-  products,
-}
-
+// Categories stay hardcoded — these are navigation, not content
 export const categories: Category[] = [
   {
     id: 'mens',
-    name: "Suits & Blazers",
+    name: 'Suits & Blazers',
     label: "Men's Wear",
     href: '/collections/mens',
     placeholderClass: 'cb-1',
@@ -89,33 +27,50 @@ export const categories: Category[] = [
   },
 ]
 
+// Fetch all products from Sanity
 export async function getProducts(): Promise<Product[]> {
-  return client.fetch(productsQuery)
-}
-
-export async function getProductBySlug(slug: string): Promise<Product | null> {
-  return client.fetch(productBySlugQuery, { slug })
-}
-
-export async function getProductsForCollection(collectionSlug: string): Promise<Product[]> {
-  const products = await getProducts()
-  if (collectionSlug === 'so-fly') {
-    return products
-  }
-
-  const collectionCategories: Record<string, string[]> = {
-    mens: ['tops', 'bottoms'],
-    womens: ['dresses', 'tops'],
-    corporate: ['tops', 'bottoms'],
-    accessories: ['accessories'],
-  }
-
-  const categories = collectionCategories[collectionSlug]
-  if (!categories) {
+  try {
+    return await client.fetch(productsQuery)
+  } catch (error) {
+    console.error('Failed to fetch products:', error)
     return []
   }
+}
 
-  return products.filter((product) => categories.includes(product.category?.toLowerCase() ?? ''))
+// Fetch single product by slug
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  try {
+    return await client.fetch(productBySlugQuery, { slug })
+  } catch (error) {
+    console.error('Failed to fetch product:', error)
+    return null
+  }
+}
+
+// Fetch products filtered by collection
+export async function getProductsForCollection(collectionSlug: string): Promise<Product[]> {
+  try {
+    // so-fly collection shows all products
+    if (collectionSlug === 'so-fly') {
+      return await getProducts()
+    }
+
+    // Map collection slugs to Sanity category values
+    const categoryMap: Record<string, string> = {
+      mens: "Men's Suits",
+      womens: "Women's Collection",
+      corporate: 'Corporate',
+      accessories: 'Accessories',
+    }
+
+    const category = categoryMap[collectionSlug]
+    if (!category) return []
+
+    return await client.fetch(collectionProductsQuery, { category })
+  } catch (error) {
+    console.error('Failed to fetch collection products:', error)
+    return []
+  }
 }
 
 export function formatPrice(amount: number): string {

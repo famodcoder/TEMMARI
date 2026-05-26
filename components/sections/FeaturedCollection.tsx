@@ -25,9 +25,13 @@ export default async function FeaturedCollection() {
         </div>
 
         <div className="featured__grid">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {featured.length > 0 ? (
+            featured.map((product) => (
+              <ProductCard key={product._id ?? product.id} product={product} />
+            ))
+          ) : (
+            <p className="featured__empty">Products coming soon — check back shortly.</p>
+          )}
         </div>
       </div>
     </section>
