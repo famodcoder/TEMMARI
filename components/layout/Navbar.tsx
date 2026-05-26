@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { WA_LINK } from '@/lib/products'
@@ -28,13 +27,12 @@ export default function Navbar() {
 
         {/* Logo */}
 <Link href="/" className="navbar__logo" aria-label="Temmari — home">
-  <Image
+  <img
     src="/logo-nav.png"
     alt="Temmari"
     width={52}
     height={52}
-    priority
-    style={{ objectFit: 'contain' }}
+    style={{ objectFit: 'contain', display: 'block' }}
   />
 </Link>
           
