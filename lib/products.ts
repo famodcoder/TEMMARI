@@ -1,8 +1,7 @@
-import type { Product, Collection, Category } from '@/types'
+import type { Product, Category } from '@/types'
 import { client } from '@/lib/sanity'
 import { productsQuery, productBySlugQuery, collectionProductsQuery } from '@/lib/queries'
 
-// Categories stay hardcoded — these are navigation, not content
 export const categories: Category[] = [
   {
     id: 'mens',
@@ -27,17 +26,17 @@ export const categories: Category[] = [
   },
 ]
 
-// Fetch all products from Sanity
 export async function getProducts(): Promise<Product[]> {
   try {
-    return await client.fetch(productsQuery)
+    const results = await client.fetch(productsQuery)
+    console.log('Sanity products fetched:', results.length)
+    return results
   } catch (error) {
     console.error('Failed to fetch products:', error)
     return []
   }
 }
 
-// Fetch single product by slug
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
     return await client.fetch(productBySlugQuery, { slug })
@@ -47,15 +46,12 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
 }
 
-// Fetch products filtered by collection
 export async function getProductsForCollection(collectionSlug: string): Promise<Product[]> {
   try {
-    // so-fly collection shows all products
     if (collectionSlug === 'so-fly') {
       return await getProducts()
     }
 
-    // Map collection slugs to Sanity category values
     const categoryMap: Record<string, string> = {
       mens: "Men's Suits",
       womens: "Women's Collection",

@@ -2,7 +2,7 @@ import {groq} from 'next-sanity'
 
 export const productsQuery = groq`
   *[_type == "product"] | order(_createdAt desc) {
-    _id,
+    "_id": _id,
     "id": _id,
     name,
     price,
@@ -21,7 +21,7 @@ export const productsQuery = groq`
 
 export const productBySlugQuery = groq`
   *[_type == "product" && slug.current == $slug][0] {
-    _id,
+    "_id": _id,
     "id": _id,
     name,
     price,
@@ -40,7 +40,7 @@ export const productBySlugQuery = groq`
 
 export const collectionProductsQuery = groq`
   *[_type == "product" && category == $category] | order(_createdAt desc) {
-    _id,
+    "_id": _id,
     "id": _id,
     name,
     price,
