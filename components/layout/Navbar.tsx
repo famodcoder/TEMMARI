@@ -1,5 +1,5 @@
 'use client'
-
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { WA_LINK } from '@/lib/products'
@@ -27,10 +27,17 @@ export default function Navbar() {
       <div className="navbar__inner">
 
         {/* Logo */}
-        <Link href="/" className="navbar__logo" aria-label="Temmari — home">
-          TEMMARI
-        </Link>
-
+<Link href="/" className="navbar__logo" aria-label="Temmari — home">
+  <Image
+    src="/logo-nav.png"
+    alt="Temmari"
+    width={52}
+    height={52}
+    priority
+    style={{ objectFit: 'contain' }}
+  />
+</Link>
+          
         <button
           type="button"
           className="navbar__toggle"
@@ -96,18 +103,11 @@ export default function Navbar() {
           height: 72px;
         }
         .navbar__logo {
-          font-family: 'Playfair Display SC', var(--font-serif);
-          font-size: 16px;
-          font-weight: 400;
-          letter-spacing: 0.35em;
-          line-height: 1.15;
-          text-transform: uppercase;
-          color: var(--slate);
-          text-decoration: none;
-          position: relative;
-          padding-bottom: 4px;
-          display: inline-block;
-        }
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        flex-shrink: 0;
+       }
         .navbar__logo::after {
           content: '';
           position: absolute;
